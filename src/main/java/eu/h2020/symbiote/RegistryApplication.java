@@ -13,7 +13,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 public class RegistryApplication {
 
-
 	public static Log log = LogFactory.getLog(RegistryApplication.class);
 
 	public static void main(String[] args) {

@@ -1,8 +1,7 @@
 package eu.h2020.symbiote.messaging;
 
-import eu.h2020.symbiote.repository.InformationModel;
-import eu.h2020.symbiote.repository.Mapping;
-import eu.h2020.symbiote.repository.Platform;
+import eu.h2020.symbiote.model.Platform;
+import eu.h2020.symbiote.model.Sensor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -13,8 +12,8 @@ import org.apache.commons.logging.LogFactory;
 public class RegistrationPublisher {
 
     private static String PLATFORM_CREATED_QUEUE = "PlatformCreated";
-    private static String MODEL_CREATED_QUEUE = "ModelCreated";
-    private static String MAPPING_CREATED_QUEUE = "MappingCreated";
+    private static String SENSOR_CREATED_QUEUE = "SensorCreated";
+//    private static String MAPPING_CREATED_QUEUE = "MappingCreated";
 
 
     private static Log log = LogFactory.getLog(RegistrationPublisher.class);
@@ -44,17 +43,17 @@ public class RegistrationPublisher {
         }
     }
 
-    public void sendModelCreatedMessage(InformationModel informationModel ) {
+    public void sendSensorCreatedMessage(Sensor sensor ) {
         try {
 //            OntologyModel ontologyModel = new OntologyModel(modelId,model,format);
-            RabbitMessager.sendMessage(MODEL_CREATED_QUEUE, informationModel);
-            log.info("Model " + informationModel.getId() + " created message send successfully");
+            RabbitMessager.sendMessage(SENSOR_CREATED_QUEUE, sensor);
+            log.info("Sensor " + sensor.getId() + " created message send successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
+/*
     public void sendMappingCreatedMessage(Mapping savedMapping) {
         try {
 
@@ -64,4 +63,5 @@ public class RegistrationPublisher {
             e.printStackTrace();
         }
     }
+    */
 }

@@ -1,11 +1,15 @@
 package eu.h2020.symbiote.model;
 
+import org.springframework.data.annotation.Id;
+
 import java.math.BigInteger;
 
 /**
  * Created by jawora on 22.09.16.
  */
 public class Location {
+
+    @Id
     private BigInteger id;
     private String name;
     private String description;

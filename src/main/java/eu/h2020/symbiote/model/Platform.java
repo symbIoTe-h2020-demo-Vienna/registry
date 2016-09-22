@@ -1,5 +1,7 @@
 package eu.h2020.symbiote.model;
 
+import org.springframework.data.annotation.Id;
+
 import java.math.BigInteger;
 import java.net.URL;
 
@@ -7,6 +9,8 @@ import java.net.URL;
  * Created by jawora on 22.09.16.
  */
 public class Platform {
+
+    @Id
     private BigInteger id;
     private String owner;
     private String name;
