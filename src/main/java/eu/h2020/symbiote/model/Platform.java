@@ -3,7 +3,6 @@ package eu.h2020.symbiote.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigInteger;
 import java.net.URL;
 
 /**
@@ -13,7 +12,7 @@ import java.net.URL;
 public class Platform {
 
     @Id
-    private BigInteger id;
+    private String id;
     private String owner;
     private String name;
     private String type;
@@ -30,7 +29,7 @@ public class Platform {
         this.resourceAccessProxyUrl = resourceAccessProxyUrl;
     }
 
-    public Platform(BigInteger id, String owner, String name, String type, URL resourceAccessProxyUrl) {
+    public Platform(String id, String owner, String name, String type, URL resourceAccessProxyUrl) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -38,11 +37,11 @@ public class Platform {
         this.resourceAccessProxyUrl = resourceAccessProxyUrl;
     }
 
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

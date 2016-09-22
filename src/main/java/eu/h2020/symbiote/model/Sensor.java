@@ -4,8 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigInteger;
-
 /**
  * Created by jawora on 22.09.16.
  */
@@ -13,7 +11,7 @@ import java.math.BigInteger;
 public class Sensor {
 
     @Id
-    private BigInteger id;
+    private String id;
     private String name;
     private String owner;
     private String description;
@@ -34,7 +32,7 @@ public class Sensor {
         this.platform = platform;
     }
 
-    public Sensor(BigInteger id, String name, String owner, String description, Location location, String observedProperty, Platform platform) {
+    public Sensor(String id, String name, String owner, String description, Location location, String observedProperty, Platform platform) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -44,11 +42,11 @@ public class Sensor {
         this.platform = platform;
     }
 
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

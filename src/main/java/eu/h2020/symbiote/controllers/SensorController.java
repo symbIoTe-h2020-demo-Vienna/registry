@@ -11,13 +11,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.math.BigInteger;
 
 /**
  * Created by mateuszl on 22.09.2016.
  */
 
-@CrossOrigin
+@CrossOrigin(methods = RequestMethod.POST)
 @RepositoryRestController
 public class SensorController {
 
@@ -27,22 +26,22 @@ public class SensorController {
     @Autowired
     private PlatformRepository platformRepo;
 
-    @RequestMapping(value="/platforms/{id}/sensor", method= RequestMethod.POST)
+    @RequestMapping(value="/platform/{id}/sensors", method= RequestMethod.POST)
     public @ResponseBody
-    HttpEntity<BigInteger> addPlatform(@PathVariable(value="id") BigInteger platformId, @RequestBody Sensor sensor) {
+    HttpEntity<String> addSensor(@PathVariable(value="id") String platformId, @RequestBody Sensor sensor) {
         System.out.println( "Adding Sensor");
 
-        Platform platform = platformRepo.findOne(platformId.toString());
+        Platform foundPlatform = platformRepo.findOne(platformId.toString());
 
-        sensor.setPlatform(platform);
+        sensor.setPlatform(foundPlatform);
 
         Sensor savedSensor = sensorRepo.save(sensor);
-        System.out.println( "Platform added! : " + savedSensor + ". Sending message...");
+        System.out.println( "Sensor added! : " + savedSensor + ". Sending message...");
         //Sending message
         RegistrationPublisher.getInstance().sendSensorCreatedMessage( savedSensor );
 
 //        return new ResponseEntity<Sensor>( savedSensor, HttpStatus.OK);
         System.out.println("Response send with id: " + savedSensor.getId());
-        return new ResponseEntity<BigInteger>( savedSensor.getId(), HttpStatus.OK);
+        return new ResponseEntity<String>( savedSensor.getId(), HttpStatus.OK);
     }
 }

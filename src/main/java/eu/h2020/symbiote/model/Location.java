@@ -2,15 +2,13 @@ package eu.h2020.symbiote.model;
 
 import org.springframework.data.annotation.Id;
 
-import java.math.BigInteger;
-
 /**
  * Created by jawora on 22.09.16.
  */
 public class Location {
 
     @Id
-    private BigInteger id;
+    private String id;
     private String name;
     private String description;
     private Double longitude;
@@ -28,7 +26,7 @@ public class Location {
         this.altitude = altitude;
     }
 
-    public Location(BigInteger id, String name, String description, Double longitude, Double latitude, Double altitude) {
+    public Location(String id, String name, String description, Double longitude, Double latitude, Double altitude) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,11 +35,11 @@ public class Location {
         this.altitude = altitude;
     }
 
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 

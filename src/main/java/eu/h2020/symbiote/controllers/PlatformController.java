@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
-
 /**
  * Created by mateuszl on 22.09.2016.
  */
@@ -24,7 +22,7 @@ public class PlatformController {
 
     @RequestMapping(value="/platform", method= RequestMethod.POST)
     public @ResponseBody
-    HttpEntity<BigInteger> addPlatform(@RequestBody Platform platform) {
+    HttpEntity<String> addPlatform(@RequestBody Platform platform) {
         System.out.println( "Adding Platform");
         Platform savedPlatform = repo.save(platform);
 
@@ -34,6 +32,6 @@ public class PlatformController {
 
 //        return new ResponseEntity<Platform>( savedPlatform, HttpStatus.OK);
         System.out.println("Response send with id: " + savedPlatform.getId());
-        return new ResponseEntity<BigInteger>( savedPlatform.getId(), HttpStatus.OK);
+        return new ResponseEntity<String>( savedPlatform.getId(), HttpStatus.OK);
     }
 }
