@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.math.BigInteger;
 
 /**
@@ -26,6 +27,7 @@ public class PlatformController {
     HttpEntity<BigInteger> addPlatform(@RequestBody Platform platform) {
         System.out.println( "Adding Platform");
         Platform savedPlatform = repo.save(platform);
+
         System.out.println( "Platform added! : " + savedPlatform + ". Sending message...");
         //Sending message
         RegistrationPublisher.getInstance().sendPlatformCreatedMessage( savedPlatform );

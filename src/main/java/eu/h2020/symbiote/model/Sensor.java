@@ -1,43 +1,47 @@
 package eu.h2020.symbiote.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigInteger;
 
 /**
  * Created by jawora on 22.09.16.
  */
+@Document
 public class Sensor {
 
     @Id
     private BigInteger id;
-    private Platform platform;
     private String name;
     private String owner;
     private String description;
     private Location location;
     private String observedProperty;
+    @DBRef
+    private Platform platform;
 
     public Sensor() {
     }
 
-    public Sensor(Platform platform, String name, String owner, String description, Location location, String observedProperty) {
-        this.platform = platform;
+    public Sensor(String name, String owner, String description, Location location, String observedProperty, Platform platform) {
         this.name = name;
         this.owner = owner;
         this.description = description;
         this.location = location;
         this.observedProperty = observedProperty;
+        this.platform = platform;
     }
 
-    public Sensor(BigInteger id, Platform platform, String name, String owner, String description, Location location, String observedProperty) {
+    public Sensor(BigInteger id, String name, String owner, String description, Location location, String observedProperty, Platform platform) {
         this.id = id;
-        this.platform = platform;
         this.name = name;
         this.owner = owner;
         this.description = description;
         this.location = location;
         this.observedProperty = observedProperty;
+        this.platform = platform;
     }
 
     public BigInteger getId() {
@@ -46,14 +50,6 @@ public class Sensor {
 
     public void setId(BigInteger id) {
         this.id = id;
-    }
-
-    public Platform getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(Platform platform) {
-        this.platform = platform;
     }
 
     public String getName() {
@@ -94,5 +90,13 @@ public class Sensor {
 
     public void setObservedProperty(String observedProperty) {
         this.observedProperty = observedProperty;
+    }
+
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
     }
 }

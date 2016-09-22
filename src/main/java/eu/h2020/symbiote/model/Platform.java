@@ -1,6 +1,7 @@
 package eu.h2020.symbiote.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -8,6 +9,7 @@ import java.net.URL;
 /**
  * Created by jawora on 22.09.16.
  */
+@Document
 public class Platform {
 
     @Id

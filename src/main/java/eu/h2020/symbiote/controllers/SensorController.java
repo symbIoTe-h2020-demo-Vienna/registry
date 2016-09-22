@@ -1,7 +1,9 @@
 package eu.h2020.symbiote.controllers;
 
 import eu.h2020.symbiote.messaging.RegistrationPublisher;
+import eu.h2020.symbiote.model.Platform;
 import eu.h2020.symbiote.model.Sensor;
+import eu.h2020.symbiote.repository.PlatformRepository;
 import eu.h2020.symbiote.repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -20,13 +22,21 @@ import java.math.BigInteger;
 public class SensorController {
 
     @Autowired
-    private SensorRepository repo;
+    private SensorRepository sensorRepo;
 
-    @RequestMapping(value="/sensor", method= RequestMethod.POST)
+    @Autowired
+    private PlatformRepository platformRepo;
+
+    @RequestMapping(value="/platforms/{id}/sensor", method= RequestMethod.POST)
     public @ResponseBody
-    HttpEntity<BigInteger> addPlatform(@RequestBody Sensor sensor) {
+    HttpEntity<BigInteger> addPlatform(@PathVariable(value="id") BigInteger platformId, @RequestBody Sensor sensor) {
         System.out.println( "Adding Sensor");
-        Sensor savedSensor = repo.save(sensor);
+
+        Platform platform = platformRepo.findOne(platformId.toString());
+
+        sensor.setPlatform(platform);
+
+        Sensor savedSensor = sensorRepo.save(sensor);
         System.out.println( "Platform added! : " + savedSensor + ". Sending message...");
         //Sending message
         RegistrationPublisher.getInstance().sendSensorCreatedMessage( savedSensor );
