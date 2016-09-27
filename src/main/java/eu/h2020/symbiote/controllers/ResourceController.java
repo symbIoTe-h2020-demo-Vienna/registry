@@ -24,7 +24,7 @@ public class ResourceController {
     @Autowired
     private PlatformRepository platformRepo;
 
-    @RequestMapping(value="/register/platform", method= RequestMethod.POST)
+    @RequestMapping(value="/cloud_api/platforms", method= RequestMethod.POST)
     public @ResponseBody
     HttpEntity<String> addPlatform(@RequestBody Platform platform) {
         System.out.println( "Adding Platform");
@@ -39,9 +39,9 @@ public class ResourceController {
         return new ResponseEntity<String>( savedPlatform.getId(), HttpStatus.OK);
     }
 
-    @RequestMapping(value="/register/platform/{id}/resources", method= RequestMethod.POST)
+    @RequestMapping(value="/cloud_api/platforms/{platform_id}/resources", method= RequestMethod.POST)
     public @ResponseBody
-    HttpEntity<String> addSensor(@PathVariable(value="id") String platformId, @RequestBody Sensor sensor) {
+    HttpEntity<String> addSensor(@PathVariable(value="platform_id") String platformId, @RequestBody Sensor sensor) {
         System.out.println( "Adding Sensor");
 
         Platform foundPlatform = platformRepo.findOne(platformId.toString());
