@@ -48,7 +48,7 @@ public class ResourceController {
     @RequestMapping(value = "/cloud_api/platforms/{platform_id}/resources", method = RequestMethod.POST)
     public
     @ResponseBody
-    HttpEntity<String> addSensor(@PathVariable(value = "platform_id") String platformId, @RequestBody Sensor sensor) {
+    HttpEntity<Sensor> addSensor(@PathVariable(value = "platform_id") String platformId, @RequestBody Sensor sensor) {
         log.debug("Adding Sensor...");
         Platform foundPlatform = platformRepo.findOne(platformId);
 
@@ -60,10 +60,10 @@ public class ResourceController {
             RegistrationPublisher.getInstance().sendSensorCreatedMessage(savedSensor);
 
             log.debug("Response send with id: " + savedSensor.getId());
-            return new ResponseEntity<String>(savedSensor.getId(), HttpStatus.OK);
+            return new ResponseEntity<Sensor>(savedSensor, HttpStatus.OK);
         } else {
             log.debug("Platform with provided ID not found!");
-            return new ResponseEntity<String>("Platform with provided ID not found!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Sensor>(sensor, HttpStatus.NOT_FOUND);
         }
     }
 
