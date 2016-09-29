@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * Created by jawora on 22.09.16.
  */
@@ -16,29 +18,29 @@ public class Sensor {
     private String owner;
     private String description;
     private Location location;
-    private String observedProperty;
+    private List<String> observedProperties;
     @DBRef
     private Platform platform;
 
     public Sensor() {
     }
 
-    public Sensor(String name, String owner, String description, Location location, String observedProperty, Platform platform) {
+    public Sensor(String name, String owner, String description, Location location, List<String> observedProperties, Platform platform) {
         this.name = name;
         this.owner = owner;
         this.description = description;
         this.location = location;
-        this.observedProperty = observedProperty;
+        this.observedProperties = observedProperties;
         this.platform = platform;
     }
 
-    public Sensor(String id, String name, String owner, String description, Location location, String observedProperty, Platform platform) {
+    public Sensor(String id, String name, String owner, String description, Location location, List<String> observedProperties, Platform platform) {
         this.id = id;
         this.name = name;
         this.owner = owner;
         this.description = description;
         this.location = location;
-        this.observedProperty = observedProperty;
+        this.observedProperties = observedProperties;
         this.platform = platform;
     }
 
@@ -82,12 +84,12 @@ public class Sensor {
         this.location = location;
     }
 
-    public String getObservedProperty() {
-        return observedProperty;
+    public List<String> getObservedProperties() {
+        return observedProperties;
     }
 
-    public void setObservedProperty(String observedProperty) {
-        this.observedProperty = observedProperty;
+    public void setObservedProperties(List<String> observedProperties) {
+        this.observedProperties = observedProperties;
     }
 
     public Platform getPlatform() {
