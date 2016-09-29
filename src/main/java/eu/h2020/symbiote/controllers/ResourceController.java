@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by mateuszl on 22.09.2016.
  */
@@ -48,22 +51,26 @@ public class ResourceController {
     @RequestMapping(value = "/cloud_api/platforms/{platform_id}/resources", method = RequestMethod.POST)
     public
     @ResponseBody
-    HttpEntity<Sensor> addSensor(@PathVariable(value = "platform_id") String platformId, @RequestBody Sensor sensor) {
-        log.debug("Adding Sensor...");
+    HttpEntity<List<Sensor>> addSensor(@PathVariable(value = "platform_id") String platformId, @RequestBody List<Sensor> sensorsList) {
+        log.debug("Adding Sensors...");
         Platform foundPlatform = platformRepo.findOne(platformId);
 
-        if (foundPlatform != null) {
-            sensor.setPlatform(foundPlatform);
-            Sensor savedSensor = sensorRepo.save(sensor);
-            log.debug("Sensor added! : " + savedSensor + ". Sending message...");
-            //Sending message
-            RegistrationPublisher.getInstance().sendSensorCreatedMessage(savedSensor);
+        List<Sensor> savedSensorsList = new ArrayList<>();
 
-            log.debug("Response send with id: " + savedSensor.getId());
-            return new ResponseEntity<Sensor>(savedSensor, HttpStatus.OK);
+        if (foundPlatform != null) {
+            for (Sensor s:sensorsList) {
+                s.setPlatform(foundPlatform);
+                Sensor savedSensor = sensorRepo.save(s);
+                log.debug("Sensor added! : " + s.getId() + ". Sending message...");
+                //Sending message
+                RegistrationPublisher.getInstance().sendSensorCreatedMessage(s);
+                log.debug("Response send with id: " + s.getId());
+                savedSensorsList.add(s);
+            }
+            return new ResponseEntity<List<Sensor>>(savedSensorsList, HttpStatus.OK);
         } else {
             log.debug("Platform with provided ID not found!");
-            return new ResponseEntity<Sensor>(sensor, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<List<Sensor>>(savedSensorsList, HttpStatus.NOT_FOUND);
         }
     }
 
