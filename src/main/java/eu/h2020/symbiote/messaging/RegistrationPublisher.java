@@ -12,12 +12,11 @@ import org.apache.commons.logging.LogFactory;
 public class RegistrationPublisher {
 
     private static String PLATFORM_CREATED_QUEUE = "PlatformCreated";
-    private static String SENSOR_CREATED_QUEUE = "SensorCreated";
-//    private static String MAPPING_CREATED_QUEUE = "MappingCreated";
-
+    private static String RESOURCE_CREATED_QUEUE = "ResourceCreated";
+    private static String CRAM_PLATFORM_CREATED_QUEUE = "CramPlatformCreated";
+    private static String CRAM_RESOURCE_CREATED_QUEUE = "CramResourceCreated";
 
     private static Log log = LogFactory.getLog(RegistrationPublisher.class);
-
 
     private static RegistrationPublisher singleton;
 
@@ -26,42 +25,29 @@ public class RegistrationPublisher {
     }
 
     private RegistrationPublisher() {
-
     }
 
     public static RegistrationPublisher getInstance() {
         return singleton;
     }
 
-    public void sendPlatformCreatedMessage( Platform platform ) {
+    public void sendPlatformCreatedMessage(Platform platform) {
         try {
-//            CreatedPlatform createdPlatform = new CreatedPlatform(platform.getId(),platform.getInstance(),platform.getFormat(),modelId);
             RabbitMessager.sendMessage(PLATFORM_CREATED_QUEUE, platform);
+            RabbitMessager.sendMessage(CRAM_PLATFORM_CREATED_QUEUE, platform);
             log.info("Platform " + platform.getId() + " created message send successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void sendSensorCreatedMessage(Sensor sensor ) {
+    public void sendSensorCreatedMessage(Sensor sensor) {
         try {
-//            OntologyModel ontologyModel = new OntologyModel(modelId,model,format);
-            RabbitMessager.sendMessage(SENSOR_CREATED_QUEUE, sensor);
+            RabbitMessager.sendMessage(RESOURCE_CREATED_QUEUE, sensor);
+            RabbitMessager.sendMessage(CRAM_RESOURCE_CREATED_QUEUE, sensor);
             log.info("Sensor " + sensor.getId() + " created message send successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-/*
-    public void sendMappingCreatedMessage(Mapping savedMapping) {
-        try {
-
-            RabbitMessager.sendMessage(MAPPING_CREATED_QUEUE, savedMapping);
-            log.info("Mapping " + savedMapping.getId() + " created message send successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
 }
