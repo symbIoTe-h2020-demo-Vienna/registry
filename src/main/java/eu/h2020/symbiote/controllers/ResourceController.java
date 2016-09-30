@@ -1,8 +1,10 @@
 package eu.h2020.symbiote.controllers;
 
 import eu.h2020.symbiote.messaging.RegistrationPublisher;
+import eu.h2020.symbiote.model.Location;
 import eu.h2020.symbiote.model.Platform;
 import eu.h2020.symbiote.model.Sensor;
+import eu.h2020.symbiote.repository.LocationRepository;
 import eu.h2020.symbiote.repository.PlatformRepository;
 import eu.h2020.symbiote.repository.SensorRepository;
 import org.apache.commons.logging.Log;
@@ -30,6 +32,9 @@ public class ResourceController {
 
     @Autowired
     private PlatformRepository platformRepo;
+
+    @Autowired
+    private LocationRepository locationRepo;
 
     @RequestMapping(value = "/cloud_api/platforms", method = RequestMethod.POST)
     public
@@ -60,6 +65,9 @@ public class ResourceController {
         if (foundPlatform != null) {
             for (Sensor s:sensorsList) {
                 s.setPlatform(foundPlatform);
+                Location location = s.getLocation();
+                locationRepo.save(location);
+                s.setLocation(location);
                 Sensor savedSensor = sensorRepo.save(s);
                 log.debug("Sensor added! : " + s.getId() + ". Sending message...");
                 //Sending message
