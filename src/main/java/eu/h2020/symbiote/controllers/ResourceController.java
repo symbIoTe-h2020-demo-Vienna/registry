@@ -82,6 +82,7 @@ public class ResourceController {
         }
     }
 
+    /* HATEOAS LOCK
     @RequestMapping(value = {"/sensor", "/sensors", "/platform", "/platforms", "/cloud_api", "/cloud_api/sensors"})
     public
     @ResponseBody
@@ -89,5 +90,5 @@ public class ResourceController {
         String message = "Error. Method not allowed";
         return new ResponseEntity<String>(message, HttpStatus.METHOD_NOT_ALLOWED);
     }
-
+    */
 }
