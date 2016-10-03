@@ -1,5 +1,6 @@
 package eu.h2020.symbiote;
 
+import eu.h2020.symbiote.messaging.RPCReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
@@ -17,5 +18,12 @@ public class RegistryApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RegistryApplication.class, args);
+
+		try {
+			RPCReceiver.consumeRPCMessageAndResponse();
+//			MessagingSubscriptions.subscribeForResourceAndPlatformRegistrationRequests();
+		} catch (Exception e) {
+			log.error("Error occured during subscribing from search service", e);
+		}
 	}
 }
