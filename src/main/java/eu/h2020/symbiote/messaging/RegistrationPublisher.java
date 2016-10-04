@@ -35,7 +35,7 @@ public class RegistrationPublisher {
         try {
             RabbitMessager.sendMessage(PLATFORM_CREATED_QUEUE, platform);
             RabbitMessager.sendMessage(CRAM_PLATFORM_CREATED_QUEUE, platform);
-            log.info("Platform " + platform.getId() + " created message send successfully");
+            log.info("Platform " + platform.getId() + " created messages sent successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ public class RegistrationPublisher {
         try {
             RabbitMessager.sendMessage(RESOURCE_CREATED_QUEUE, sensor);
             RabbitMessager.sendMessage(CRAM_RESOURCE_CREATED_QUEUE, sensor);
-            log.info("Sensor " + sensor.getId() + " created message send successfully");
+            log.info("Sensor " + sensor.getId() + " created messages sent successfully");
         } catch (Exception e) {
             e.printStackTrace();
         }

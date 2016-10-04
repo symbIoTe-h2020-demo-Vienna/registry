@@ -4,22 +4,22 @@ package eu.h2020.symbiote.model;
  * Created by mateuszl on 03.10.2016.
  */
 public class RegistrationObject {
-    String regObject;
+    String registrationObjectBody;
     RegistrationObjectType type;
     String parentID;
 
-    public RegistrationObject(String regObject, RegistrationObjectType type, String parentID) {
-        this.regObject = regObject;
+    public RegistrationObject(String registrationObjectBody, RegistrationObjectType type, String parentID) {
+        this.registrationObjectBody = registrationObjectBody;
         this.type = type;
         this.parentID = parentID;
     }
 
     public String getRegistrationObjectBody() {
-        return regObject;
+        return registrationObjectBody;
     }
 
-    public void setRegObject(String regObject) {
-        this.regObject = regObject;
+    public void setRegistrationObjectBody(String registrationObjectBody) {
+        this.registrationObjectBody = registrationObjectBody;
     }
 
     public RegistrationObjectType getType() {

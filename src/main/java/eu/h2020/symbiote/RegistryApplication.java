@@ -21,7 +21,6 @@ public class RegistryApplication {
 
 		try {
 			RPCReceiver.consumeRPCMessageAndResponse();
-//			MessagingSubscriptions.subscribeForResourceAndPlatformRegistrationRequests();
 		} catch (Exception e) {
 			log.error("Error occured during subscribing from search service", e);
 		}

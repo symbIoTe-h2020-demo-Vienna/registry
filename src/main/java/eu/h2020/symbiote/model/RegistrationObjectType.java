@@ -5,5 +5,5 @@ package eu.h2020.symbiote.model;
  */
 public enum RegistrationObjectType {
     PLATFORM,
-    SENSOR;
+    SENSOR
 }

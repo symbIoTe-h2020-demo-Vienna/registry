@@ -4,6 +4,8 @@ package eu.h2020.symbiote.messaging;
 
 import com.rabbitmq.client.*;
 import eu.h2020.symbiote.repository.RepositoryManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -12,6 +14,8 @@ import java.util.concurrent.TimeoutException;
  * Created by mateuszl on 03.10.2016.
  */
 public class RPCReceiver {
+
+    public static Log log = LogFactory.getLog(RPCReceiver.class);
 
     private static final String RPC_REQUEST_QUEUE_NAME = "rpc_request_queue";
     private static final String RPC_REPLY_QUEUE_NAME = "rpc_reply_queue";
@@ -25,7 +29,6 @@ public class RPCReceiver {
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(RPC_REQUEST_QUEUE_NAME, false, false, false, null);
-
         channel.queueDeclare(RPC_REPLY_QUEUE_NAME, false, false, false, null);
 
         channel.basicQos(1);
@@ -33,7 +36,7 @@ public class RPCReceiver {
         QueueingConsumer consumer = new QueueingConsumer(channel);
         channel.basicConsume(RPC_REQUEST_QUEUE_NAME, false, consumer);
 
-        System.out.println(" [x] Awaiting RPC requests");
+        log.info(" [x] Awaiting RPC requests");
 
         while (true) {
             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
@@ -45,13 +48,11 @@ public class RPCReceiver {
                     .build();
 
             String receivedRegistrationObject = new String(delivery.getBody());
+            log.info("[][] RPC Message Received :\n" + receivedRegistrationObject);
 
-            System.out.println(" [.][.][.][.][.][.][.][.][.][.][.][.][.][.][.][.][.][.][.][.]\n"
-                    + receivedRegistrationObject);
             String response = "" + RepositoryManager.saveToDatabase(receivedRegistrationObject);
-            System.out.println("{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}");
-            System.out.println("Response with message sent back");
-
+            System.out.println(response);
+            log.info("[][] RPC Response with message sent back \n");
             channel.basicPublish("", props.getReplyTo(), replyProps, response.getBytes());
 
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
