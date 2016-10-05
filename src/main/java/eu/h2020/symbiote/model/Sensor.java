@@ -19,7 +19,6 @@ public class Sensor {
     private String description;
     private Location location;
     private List<String> observedProperties;
-    @DBRef
     private Platform platform;
 
     public Sensor() {

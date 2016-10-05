@@ -1,6 +1,7 @@
 package eu.h2020.symbiote.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 /**
  * Created by jawora on 22.09.16.
@@ -11,28 +12,25 @@ public class Location {
     private String id;
     private String name;
     private String description;
-    private Double longitude;
-    private Double latitude;
+    private GeoJsonPoint point;
     private Double altitude;
 
     public Location() {
     }
 
-    public Location(String name, String description, Double longitude, Double latitude, Double altitude) {
+    public Location(String name, String description,GeoJsonPoint point, Double altitude) {
         this.name = name;
         this.description = description;
-        this.longitude = longitude;
-        this.latitude = latitude;
         this.altitude = altitude;
+        this.point = point;
     }
 
-    public Location(String id, String name, String description, Double longitude, Double latitude, Double altitude) {
+    public Location(String id, String name, String description,  GeoJsonPoint point, Double altitude) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.longitude = longitude;
-        this.latitude = latitude;
         this.altitude = altitude;
+        this.point = point;
     }
 
     public String getId() {
@@ -59,20 +57,12 @@ public class Location {
         this.description = description;
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public GeoJsonPoint getPoint() {
+        return point;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setPoint(GeoJsonPoint point) {
+        this.point = point;
     }
 
     public Double getAltitude() {
@@ -82,4 +72,6 @@ public class Location {
     public void setAltitude(Double altitude) {
         this.altitude = altitude;
     }
+
+
 }
