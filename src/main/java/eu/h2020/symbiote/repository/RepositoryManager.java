@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,6 +23,9 @@ import java.util.List;
 public class RepositoryManager {
 
     public static Log log = LogFactory.getLog(RepositoryManager.class);
+    private static SensorRepository sensorRepo;
+    private static PlatformRepository platformRepo;
+    private static LocationRepository locationRepo;
 
     @Autowired
     public RepositoryManager(SensorRepository sensorRepo, PlatformRepository platformRepo, LocationRepository locationRepo) {
@@ -30,19 +34,12 @@ public class RepositoryManager {
         this.locationRepo = locationRepo;
     }
 
-    private static SensorRepository sensorRepo;
-
-    private static PlatformRepository platformRepo;
-
-    private static LocationRepository locationRepo;
-
-
     /**
      * @param regObjectInJson
      * @return JSON id String - with either List<Sensor> or PlatformId
      */
     public static String saveToDatabase(String regObjectInJson) {
-        String response="";
+        String response = "";
         Gson gson = new Gson();
         RegistrationObject registrationObject = gson.fromJson(regObjectInJson, RegistrationObject.class);
         System.out.println("[] Registration Object Body: \n" + registrationObject.getRegistrationObjectBody());
@@ -52,13 +49,14 @@ public class RepositoryManager {
                 log.debug("Adding Platform");
                 try {
                     Platform platform = gson.fromJson(registrationObject.getRegistrationObjectBody(), Platform.class);
-                    String savedPlatformId ="";
-                    if (platform!=null) {
+                    String savedPlatformId = "";
+                    if (platform != null) {
                         savedPlatformId = savePlatform(platform);
                         //savePlatform returns JSON already
                         log.info("Platform with id: " + savedPlatformId + " saved !");
                     }
-                    response = savedPlatformId;
+//                    response = "{\"platformId\": \"" + savedPlatformId + "\"}";
+                    response = "[" + savedPlatformId + "]";
                 } catch (Exception e) {
                     log.error("Error occured during Platform saving to db", e);
                 }
@@ -67,15 +65,26 @@ public class RepositoryManager {
                 try {
                     Sensor[] sensorsArray = gson.fromJson(registrationObject.getRegistrationObjectBody(), Sensor[].class);
                     List<Sensor> sensorsList = new ArrayList<>(Arrays.asList(sensorsArray));
-                    response = saveSensors(registrationObject.getParentID(), sensorsList);
-                    //saveSensor returns JSON  String already
+                    List<String> savedSensorsWithIDsList = saveSensors(registrationObject.getParentID(), sensorsList);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("[");
+                    Iterator<String> iterator = savedSensorsWithIDsList.iterator();
+                    while (iterator.hasNext()) {
+                        sb.append(iterator.next());
+                        if (iterator.hasNext()) {
+                            sb.append(",");
+                        }
+                    }
+                    sb.append("]");
+                    response = sb.toString();
+                    System.out.println(response);
                     log.info("Sensors saved !");
                 } catch (Exception e) {
                     log.error("Error occured during Sensor saving to db", e);
                 }
                 break;
         }
-        return response; //JSON with String
+        return response; //JSON String
     }
 
     /**
@@ -91,10 +100,7 @@ public class RepositoryManager {
         RegistrationPublisher.getInstance().sendPlatformCreatedMessage(savedPlatform);
         String savedPlatformId = savedPlatform.getId();
         log.info("Response send with id: " + savedPlatformId);
-
-        Gson gson = new Gson();
-        String savedPlatformIdInJson = gson.toJson(savedPlatformId);
-        return savedPlatformIdInJson;
+        return savedPlatformId;
     }
 
     /**
@@ -102,10 +108,9 @@ public class RepositoryManager {
      * @param sensorsList
      * @return String with JSON of added resources (containing IDs)
      */
-    public static String saveSensors(String platformId, List<Sensor> sensorsList) {
+    public static List<String> saveSensors(String platformId, List<Sensor> sensorsList) {
         Platform foundPlatform = platformRepo.findOne(platformId);
-//        List<String> savedSensorsIDsList = new ArrayList<>();
-        List<Sensor> savedSensorsList = new ArrayList<>();
+        List<String> savedSensorsJsonsList = new ArrayList<>();
         if (foundPlatform != null) {
             for (Sensor s : sensorsList) {
                 s.setPlatform(foundPlatform);
@@ -117,15 +122,11 @@ public class RepositoryManager {
                 //Sending message
                 RegistrationPublisher.getInstance().sendSensorCreatedMessage(s);
                 log.info("Response send with id: " + savedSensor.getId());
-                savedSensorsList.add(savedSensor);
+                Gson gson = new Gson();
+                savedSensorsJsonsList.add(gson.toJson(savedSensor));
 //                savedSensorsIDsList.add(savedSensor.getId());
             }
-            Gson gson = new Gson();
-            String savedSensorsListInJson = gson.toJson(savedSensorsList);
-            return savedSensorsListInJson;
-        } else {
-            log.info("Platform with provided ID not found!");
-            return "FAIL! Platform with provided ID not found!";
         }
+        return savedSensorsJsonsList;
     }
 }

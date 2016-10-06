@@ -47,10 +47,10 @@ public class RPCReceiver {
                     .correlationId(props.getCorrelationId())
                     .build();
 
-            String receivedRegistrationObject = new String(delivery.getBody());
-            log.info("[][] RPC Message Received :\n" + receivedRegistrationObject);
+            String receivedRegistrationObjectInJSON = new String(delivery.getBody());
+            log.info("[][] RPC Message Received :\n" + receivedRegistrationObjectInJSON);
 
-            String response = RepositoryManager.saveToDatabase(receivedRegistrationObject);
+            String response = RepositoryManager.saveToDatabase(receivedRegistrationObjectInJSON);
             //saveToDatabase returns JSON with string
             log.info(response);
             log.info("[][] RPC Response with message sent back \n");
