@@ -2,10 +2,7 @@ package eu.h2020.symbiote.repository;
 
 import com.google.gson.Gson;
 import eu.h2020.symbiote.messaging.RegistrationPublisher;
-import eu.h2020.symbiote.model.Location;
-import eu.h2020.symbiote.model.Platform;
-import eu.h2020.symbiote.model.RegistrationObject;
-import eu.h2020.symbiote.model.Sensor;
+import eu.h2020.symbiote.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +60,8 @@ public class RepositoryManager {
                 break;
             case SENSOR:
                 try {
-                    Sensor[] sensorsArray = gson.fromJson(registrationObject.getRegistrationObjectBody(), Sensor[].class);
-                    List<Sensor> sensorsList = new ArrayList<>(Arrays.asList(sensorsArray));
+                    SensorBasic[] sensorsArray = gson.fromJson(registrationObject.getRegistrationObjectBody(), SensorBasic[].class);
+                    List<SensorBasic> sensorsList = new ArrayList<>(Arrays.asList(sensorsArray));
                     List<String> savedSensorsWithIDsList = saveSensors(registrationObject.getParentID(), sensorsList);
                     StringBuilder sb = new StringBuilder();
                     sb.append("[");
@@ -108,22 +105,24 @@ public class RepositoryManager {
      * @param sensorsList
      * @return String with JSON of added resources (containing IDs)
      */
-    public static List<String> saveSensors(String platformId, List<Sensor> sensorsList) {
+    public static List<String> saveSensors(String platformId, List<SensorBasic> sensorsList) {
         Platform foundPlatform = platformRepo.findOne(platformId);
         List<String> savedSensorsJsonsList = new ArrayList<>();
         if (foundPlatform != null) {
-            for (Sensor s : sensorsList) {
+            for (SensorBasic s : sensorsList) {
                 s.setPlatform(foundPlatform);
-                Location location = s.getLocation();
+                Sensor sensorToSave = SensorFactory.createFromBasicSensor(s);
+                Location location = sensorToSave.getLocation();
                 Location savedLocation = locationRepo.save(location);
-                s.setLocation(savedLocation);
-                Sensor savedSensor = sensorRepo.save(s);
+                sensorToSave.setLocation(savedLocation);
+                Sensor savedSensor = sensorRepo.save(sensorToSave);
                 log.info("Sensor added! : " + savedSensor.getId() + ". Sending message...");
                 //Sending message
+                s.setId(savedSensor.getId());
                 RegistrationPublisher.getInstance().sendSensorCreatedMessage(s);
                 log.info("Response send with id: " + savedSensor.getId());
                 Gson gson = new Gson();
-                savedSensorsJsonsList.add(gson.toJson(savedSensor));
+                savedSensorsJsonsList.add(gson.toJson(s));
 //                savedSensorsIDsList.add(savedSensor.getId());
             }
         }

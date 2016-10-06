@@ -2,6 +2,7 @@ package eu.h2020.symbiote.messaging;
 
 import eu.h2020.symbiote.model.Platform;
 import eu.h2020.symbiote.model.Sensor;
+import eu.h2020.symbiote.model.SensorBasic;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,7 +42,7 @@ public class RegistrationPublisher {
         }
     }
 
-    public void sendSensorCreatedMessage(Sensor sensor) {
+    public void sendSensorCreatedMessage(SensorBasic sensor) {
         try {
             RabbitMessager.sendMessage(RESOURCE_CREATED_QUEUE, sensor);
             RabbitMessager.sendMessage(CRAM_RESOURCE_CREATED_QUEUE, sensor);
