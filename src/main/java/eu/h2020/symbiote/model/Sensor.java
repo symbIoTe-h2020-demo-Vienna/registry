@@ -1,9 +1,12 @@
 package eu.h2020.symbiote.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -20,20 +23,22 @@ public class Sensor {
     private Location location;
     private List<String> observedProperties;
     private Platform platform;
+    private URL resourceURL;
 
     public Sensor() {
     }
 
-    public Sensor(String name, String owner, String description, Location location, List<String> observedProperties, Platform platform) {
+    public Sensor(String name, String owner, String description, Location location, List<String> observedProperties, Platform platform, URL resourceURL) {
         this.name = name;
         this.owner = owner;
         this.description = description;
         this.location = location;
         this.observedProperties = observedProperties;
         this.platform = platform;
+        this.resourceURL = resourceURL;
     }
 
-    public Sensor(String id, String name, String owner, String description, Location location, List<String> observedProperties, Platform platform) {
+    public Sensor(String id, String name, String owner, String description, Location location, List<String> observedProperties, Platform platform, URL resourceURL) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -41,6 +46,7 @@ public class Sensor {
         this.location = location;
         this.observedProperties = observedProperties;
         this.platform = platform;
+        this.resourceURL = resourceURL;
     }
 
     public String getId() {
@@ -97,5 +103,13 @@ public class Sensor {
 
     public void setPlatform(Platform platform) {
         this.platform = platform;
+    }
+
+    public URL getResourceURL() {
+        return resourceURL;
+    }
+
+    public void setResourceURL(URL resourceURL) {
+        this.resourceURL = resourceURL;
     }
 }
