@@ -50,8 +50,9 @@ public class RPCReceiver {
             String receivedRegistrationObject = new String(delivery.getBody());
             log.info("[][] RPC Message Received :\n" + receivedRegistrationObject);
 
-            String response = "" + RepositoryManager.saveToDatabase(receivedRegistrationObject);
-            System.out.println(response);
+            String response = RepositoryManager.saveToDatabase(receivedRegistrationObject);
+            //saveToDatabase returns JSON with string
+            log.info(response);
             log.info("[][] RPC Response with message sent back \n");
             channel.basicPublish("", props.getReplyTo(), replyProps, response.getBytes());
 
