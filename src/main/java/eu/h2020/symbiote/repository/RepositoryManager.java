@@ -52,8 +52,8 @@ public class RepositoryManager {
                         //savePlatform returns JSON already
                         log.info("Platform with id: " + savedPlatformId + " saved !");
                     }
-//                    response = "{\"platformId\": \"" + savedPlatformId + "\"}";
-                    response = "[" + savedPlatformId + "]";
+                    response = "{\"id\": \"" + savedPlatformId + "\"}";
+//                    response = "[" + savedPlatformId + "]";
                 } catch (Exception e) {
                     log.error("Error occured during Platform saving to db", e);
                 }
