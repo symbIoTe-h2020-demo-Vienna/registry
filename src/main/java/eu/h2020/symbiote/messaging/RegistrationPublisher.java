@@ -5,11 +5,12 @@ import eu.h2020.symbiote.model.Sensor;
 import eu.h2020.symbiote.model.SensorBasic;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by mateuszl on 22.09.2016.
  */
-
+@Component
 public class RegistrationPublisher {
 
     private static String PLATFORM_CREATED_QUEUE = "PlatformCreated";
@@ -19,18 +20,18 @@ public class RegistrationPublisher {
 
     private static Log log = LogFactory.getLog(RegistrationPublisher.class);
 
-    private static RegistrationPublisher singleton;
+//    private static RegistrationPublisher singleton;
 
-    static {
-        singleton = new RegistrationPublisher();
-    }
+//    static {
+//        singleton = new RegistrationPublisher();
+//    }
 
-    private RegistrationPublisher() {
-    }
+//    private RegistrationPublisher() {
+//    }
 
-    public static RegistrationPublisher getInstance() {
-        return singleton;
-    }
+//    public static RegistrationPublisher getInstance() {
+//        return singleton;
+//    }
 
     public void sendPlatformCreatedMessage(Platform platform) {
         try {
@@ -42,7 +43,7 @@ public class RegistrationPublisher {
         }
     }
 
-    public void sendSensorCreatedMessage(SensorBasic sensor) {
+    public void sendSensorCreatedMessage(Sensor sensor) {
         try {
             RabbitMessager.sendMessage(RESOURCE_CREATED_QUEUE, sensor);
             RabbitMessager.sendMessage(CRAM_RESOURCE_CREATED_QUEUE, sensor);

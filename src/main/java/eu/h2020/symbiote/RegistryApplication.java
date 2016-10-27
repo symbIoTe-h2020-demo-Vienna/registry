@@ -19,10 +19,10 @@ public class RegistryApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RegistryApplication.class, args);
 
-		try {
-			RPCReceiver.consumeRPCMessageAndResponse();
-		} catch (Exception e) {
-			log.error("Error occured during subscribing from search service", e);
-		}
+//		try {
+//			RPCReceiver.consumeRPCMessageAndResponse();
+//		} catch (Exception e) {
+//			log.error("Error occured during subscribing from search service", e);
+//		}
 	}
 }

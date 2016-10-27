@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Sensor 25",
+    "owner": "Someone",
+    "description": "Senses something...",
+    "location":
+    {
+      "name": "Poznan",
+      "longitude": 16.952986,
+      "latitude": 52.406995,
+      "altitude": 100
+    },
+    "observedProperties":
+    [
+      "Temperature",
+      "Humidity"
+    ],
+    "resourceURL": "http://sensor.com/"
+  }
+]

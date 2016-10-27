@@ -1,5 +1,7 @@
 package eu.h2020.symbiote.model;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -75,5 +77,16 @@ public class Platform {
 
     public void setResourceAccessProxyUrl(URL resourceAccessProxyUrl) {
         this.resourceAccessProxyUrl = resourceAccessProxyUrl;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 }

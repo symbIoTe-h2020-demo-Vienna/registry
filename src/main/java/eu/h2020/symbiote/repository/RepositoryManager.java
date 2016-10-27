@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by mateuszl on 03.10.2016.
@@ -20,22 +21,24 @@ import java.util.List;
 public class RepositoryManager {
 
     public static Log log = LogFactory.getLog(RepositoryManager.class);
-    private static SensorRepository sensorRepo;
-    private static PlatformRepository platformRepo;
-    private static LocationRepository locationRepo;
+    private SensorRepository sensorRepo;
+    private PlatformRepository platformRepo;
+    private LocationRepository locationRepo;
+    private RegistrationPublisher publisher;
 
     @Autowired
-    public RepositoryManager(SensorRepository sensorRepo, PlatformRepository platformRepo, LocationRepository locationRepo) {
+    public RepositoryManager(SensorRepository sensorRepo, PlatformRepository platformRepo, LocationRepository locationRepo, RegistrationPublisher publisher) {
         this.sensorRepo = sensorRepo;
         this.platformRepo = platformRepo;
         this.locationRepo = locationRepo;
+        this.publisher = publisher;
     }
 
     /**
      * @param regObjectInJson
      * @return JSON id String - with either List<Sensor> or PlatformId
      */
-    public static String saveToDatabase(String regObjectInJson) {
+    public String saveToDatabase(String regObjectInJson) {
         String response = "";
         Gson gson = new Gson();
         RegistrationObject registrationObject = gson.fromJson(regObjectInJson, RegistrationObject.class);
@@ -62,12 +65,15 @@ public class RepositoryManager {
                 try {
                     SensorBasic[] sensorsArray = gson.fromJson(registrationObject.getRegistrationObjectBody(), SensorBasic[].class);
                     List<SensorBasic> sensorsList = new ArrayList<>(Arrays.asList(sensorsArray));
-                    List<String> savedSensorsWithIDsList = saveSensors(registrationObject.getParentID(), sensorsList);
+
+                    List<Sensor> savedSensorsWithIDsList = saveSensors(registrationObject.getParentID(), transformBasicToInternalSensors(sensorsList));
                     StringBuilder sb = new StringBuilder();
                     sb.append("[");
-                    Iterator<String> iterator = savedSensorsWithIDsList.iterator();
+                    Iterator<Sensor> iterator = savedSensorsWithIDsList.iterator();
                     while (iterator.hasNext()) {
-                        sb.append(iterator.next());
+                        Sensor sensor = iterator.next();
+                        String s = gson.toJson(SensorFactory.createFromSensor(sensor));
+                        sb.append(s);
                         if (iterator.hasNext()) {
                             sb.append(",");
                         }
@@ -88,13 +94,12 @@ public class RepositoryManager {
      * @param platform
      * @return JSON with String with ID of saved Platform
      */
-    public static String savePlatform(Platform platform) {
+    public String savePlatform(Platform platform) {
         //TODO check if provided platform already exists
-
         Platform savedPlatform = platformRepo.save(platform);
         log.info("Platform added! : " + savedPlatform + ". Sending message...");
         //Sending message
-        RegistrationPublisher.getInstance().sendPlatformCreatedMessage(savedPlatform);
+        publisher.sendPlatformCreatedMessage(savedPlatform);
         String savedPlatformId = savedPlatform.getId();
         log.info("Response send with id: " + savedPlatformId);
         return savedPlatformId;
@@ -105,27 +110,34 @@ public class RepositoryManager {
      * @param sensorsList
      * @return String with JSON of added resources (containing IDs)
      */
-    public static List<String> saveSensors(String platformId, List<SensorBasic> sensorsList) {
+    public List<Sensor> saveSensors(String platformId, List<Sensor> sensorsList) {
         Platform foundPlatform = platformRepo.findOne(platformId);
-        List<String> savedSensorsJsonsList = new ArrayList<>();
+        List<Sensor> savedSensorsList = new ArrayList<>();
         if (foundPlatform != null) {
-            for (SensorBasic s : sensorsList) {
+            for (Sensor s : sensorsList) {
                 s.setPlatform(foundPlatform);
-                Sensor sensorToSave = SensorFactory.createFromBasicSensor(s);
-                Location location = sensorToSave.getLocation();
+                Location location = s.getLocation();
                 Location savedLocation = locationRepo.save(location);
-                sensorToSave.setLocation(savedLocation);
-                Sensor savedSensor = sensorRepo.save(sensorToSave);
+                s.setLocation(savedLocation);
+                Sensor savedSensor = sensorRepo.save(s);
                 log.info("Sensor added! : " + savedSensor.getId() + ". Sending message...");
                 //Sending message
                 s.setId(savedSensor.getId());
-                RegistrationPublisher.getInstance().sendSensorCreatedMessage(s);
+                publisher.sendSensorCreatedMessage(s);
                 log.info("Response send with id: " + savedSensor.getId());
-                Gson gson = new Gson();
-                savedSensorsJsonsList.add(gson.toJson(s));
-//                savedSensorsIDsList.add(savedSensor.getId());
+//                Gson gson = new Gson();
+//                savedSensorsJsonsList.add(gson.toJson(s));
+                savedSensorsList.add(savedSensor);
             }
         }
-        return savedSensorsJsonsList;
+        return savedSensorsList;
+    }
+
+    public List<Sensor> transformBasicToInternalSensors( List<SensorBasic> basicSensors ) {
+        List<Sensor> resultList = new ArrayList<>();
+        if( basicSensors != null ) {
+            resultList = basicSensors.stream().map( p -> SensorFactory.createFromBasicSensor(p)).collect(Collectors.toList());
+        }
+        return resultList;
     }
 }
